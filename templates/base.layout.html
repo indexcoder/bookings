@@ -1,0 +1,17 @@
+{{define "base"}}
+    <!doctype html>
+    <html lang="en" class="bg-zinc-900">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Document</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        {{block "css" .}}
+        {{end}}
+    </head>
+    <body>
+        {{block "content" .}}{{end}}
+        {{block  "js" .}}{{end}}
+    </body>
+    </html>
+{{end}}

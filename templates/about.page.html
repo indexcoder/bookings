@@ -1,0 +1,14 @@
+{{template "base" .}}
+{{define "content"}}
+    <h1 class="text-3xl text-green-700">About 123</h1>
+    <p>this is paragraph text</p>
+    <p>this is paragraph text 22222222</p>
+    <p>This came from the template: {{index .StringMap "test"}}</p>
+    <p>Ip address
+        {{ if ne (index .StringMap "remote_ip") ""}}
+            Yoy Ip {{index .StringMap "remote_ip"}}
+        {{ else }}
+        I don't know your ip address
+        {{ end }}
+    </p>
+{{end}}
