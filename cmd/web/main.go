@@ -42,7 +42,7 @@ func main() {
 
 	render.NewTemplate(&app)
 
-	fmt.Println("Starting application on port %s", portNumber)
+	fmt.Println("Starting 123 application on port: ", portNumber)
 
 	srv := &http.Server{
 		Addr:    ":" + portNumber,
