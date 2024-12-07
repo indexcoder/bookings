@@ -1,17 +1,31 @@
 {{define "base"}}
-    <!doctype html>
-    <html lang="en" class="bg-zinc-900">
+ <!DOCTYPE html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Document</title>
-        <link rel="stylesheet" href="/static/css/main.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Simple Landing Page</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/static/js/main.js" defer></script>
         {{block "css" .}}
         {{end}}
     </head>
-    <body>
+    <body class="bg-gray-100">
+        <header class="bg-white shadow">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <a href="/" class="text-3xl font-bold text-gray-800">My Landing Page</a>
+                    <nav>
+                        <a href="/features" class="text-gray-600 mx-3">Features</a>
+                        <a href="/about" class="text-gray-600 mx-3">About</a>
+                        <a href="/contact" class="text-gray-600 mx-3">Contact</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
         {{block "content" .}}{{end}}
-        {{block  "js" .}}{{end}}
+        {{block "js" .}}{{end}}
     </body>
-    </html>
+</html>
 {{end}}

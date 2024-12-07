@@ -3,22 +3,21 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/indexcoder/bookings/pkg/config"
-	"github.com/indexcoder/bookings/pkg/handlers"
-	"github.com/indexcoder/bookings/pkg/render"
+	"github.com/indexcoder/bookings/internal/config"
+	"github.com/indexcoder/bookings/internal/handlers"
+	"github.com/indexcoder/bookings/internal/render"
 	"log"
 	"net/http"
 	"time"
 )
 
-const portNumber = "8080"
+const portNumber = "9090"
 
 var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
 
-	// change this to true when in production
 	app.InProduction = false
 
 	session = scs.New()
@@ -39,19 +38,14 @@ func main() {
 
 	repo := handlers.NewRepo(&app)
 	handlers.NewHandler(repo)
-
 	render.NewTemplate(&app)
-
-	fmt.Println("Starting 123 application on port: ", portNumber)
-
+	fmt.Println("Starting application on port: ", portNumber)
 	srv := &http.Server{
 		Addr:    ":" + portNumber,
 		Handler: routes(&app),
 	}
-
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }

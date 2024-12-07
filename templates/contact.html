@@ -1,0 +1,51 @@
+{{template "base" .}}
+{{define "content"}}
+    <section class="py-16">
+        <div class="container mx-auto text-center">
+            <form class="w-full max-w-full" action="/search" method="post">
+                <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+                <div class="flex flex-wrap -mx-3 mb-6">
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Start date</label>
+                        <input name="start" type="date" placeholder="Start date" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                    </div>
+                    <div class="w-full md:w-1/2 px-3">
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">End date</label>
+                        <input name="end" type="date" placeholder="Date" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                    </div>
+                </div>
+                <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                    Send
+                </button>
+            </form>
+        </div>
+    </section>
+{{end}}
+
+{{define "js"}}
+<script>
+
+
+    // openModalBtn.addEventListener("click", openModal);
+    // closeModalBtn.addEventListener("click", closeModal);
+    // modalOverlay.addEventListener("click", closeModal);
+    // confirmBtn.addEventListener("click", confirmForm);
+
+    // function openModal() {
+    //     modal.classList.remove("hidden");
+    //     modalOverlay.classList.remove("hidden");
+    // }
+
+    // function closeModal() {
+    //     modal.classList.add("hidden");
+    //     modalOverlay.classList.add("hidden");
+    // }
+    //
+    // function confirmForm() {
+    //     let form = document.getElementById("fomrId")
+    //     let formData = new FormData(form)
+    //     formData.append("csrf_token", "{{ .csrf_token }}")
+    //     // fetch('search-json', {method: "post",body: formData}).then(response => response.json()).then(data => {console.log(data); console.log(data.ok)})
+    // }
+</script>
+{{end}}

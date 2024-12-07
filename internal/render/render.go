@@ -2,8 +2,10 @@ package render
 
 import (
 	"bytes"
-	"github.com/indexcoder/bookings/pkg/config"
-	"github.com/indexcoder/bookings/pkg/models"
+	"fmt"
+	"github.com/indexcoder/bookings/internal/config"
+	"github.com/indexcoder/bookings/internal/models"
+	"github.com/justinas/nosurf"
 	"html/template"
 	"log"
 	"net/http"
@@ -11,18 +13,19 @@ import (
 )
 
 var functions = template.FuncMap{}
+
 var app *config.AppConfig
 
 func NewTemplate(a *config.AppConfig) {
 	app = a
 }
 
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
-
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
-func Template(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 
 	var tc map[string]*template.Template
 
@@ -34,25 +37,30 @@ func Template(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatalf("Could not get template from template cache")
+		fmt.Println("Шаблон не найден:", tmpl)
+		log.Fatalf("Не удалось получить шаблон из кэша шаблонов.")
 	}
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
-	_ = t.Execute(buf, td)
-
-	_, err := buf.WriteTo(w)
+	err := t.Execute(buf, td)
 	if err != nil {
-		log.Printf("Error writing template to response: %v", err)
+		log.Println("Ошибка при рендеринге шаблона: ", err)
+	}
+
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		log.Printf("Ошибка записи шаблона в ответ: %v", err)
 	}
 }
 
 func TemplateCache() (map[string]*template.Template, error) {
+
 	myCache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./templates/*.page.html")
+	pages, err := filepath.Glob("./templates/*.html")
 	if err != nil {
 		return myCache, err
 	}
@@ -62,6 +70,7 @@ func TemplateCache() (map[string]*template.Template, error) {
 
 		ts, err := template.New(name).ParseFiles(page)
 		if err != nil {
+			fmt.Println(err)
 			return myCache, err
 		}
 

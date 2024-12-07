@@ -1,0 +1,149 @@
+{{template "base" .}}
+{{define "content"}}
+    <!-- Hero Section -->
+    <section class="bg-blue-500 text-white py-20">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold">Welcome to Our Landing Page! 123</h2>
+            <p class="mt-4 text-lg">We provide the best solutions to help you grow your business.</p>
+            <button type="button" id="openModalBtn" class="mt-8 inline-block bg-white text-blue-500 px-6 py-3 rounded-lg shadow hover:bg-gray-400">Get Started</button>
+        </div>
+
+        <!-- Modal Background -->
+        <div id="modalOverlay" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50"></div>
+
+        <!-- Modal -->
+        <div id="modal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+            <div class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-600">Modal Title</h2>
+                <div class="mt-6 flex justify-end space-x-2">
+                    <form id="formId" class="w-full max-w-full needs-validation reservation-dates-modal" method="post">
+                        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                        <div class="flex items-center justify-between w-full mb-2">
+                            <div class="w-full md:w-1/2 mr-4">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Start date</label>
+                                <input name="start" id="start" type="date" placeholder="Start date" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                            </div>
+                            <div class="w-full md:w-1/2">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">End date</label>
+                                <input name="end" id="end" type="date" placeholder="Date" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                            </div>
+                            ке
+                        </div>
+                        <div class="flex items-center justify-between w-full">
+                            <button id="confirmBtn" type="button" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none">Confirm</button>
+                            <button id="closeModalBtn" type="button" class="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800">Features</h3>
+            <div class="flex flex-wrap justify-center mt-8">
+                <div class="w-full md:w-1/3 p-4">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h4 class="text-xl font-bold">Feature 1</h4>
+                        <p class="mt-2 text-gray-600">Description of feature 1 that explains its benefits.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 p-4">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h4 class="text-xl font-bold">Feature 2</h4>
+                        <p class="mt-2 text-gray-600">Description of feature 2 that highlights its value.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 p-4">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h4 class="text-xl font-bold">Feature 3</h4>
+                        <p class="mt-2 text-gray-600">Description of feature 3 and how it helps users.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="bg-gray-200 py-16">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800">About Us</h3>
+            <p class="mt-4 text-gray-600">We are a dedicated team of professionals helping businesses thrive with innovative solutions.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800">Contact Us</h3>
+            <p class="mt-4 text-gray-600">Feel free to reach out for any inquiries or questions.</p>
+            <a href="mailto:info@example.com" class="mt-8 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg shadow">Email Us</a>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 My Landing Page. All rights reserved.</p>
+        </div>
+    </footer>
+{{end}}
+
+{{define "js"}}
+<script>
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const modal = document.getElementById("modal");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const confirmBtn = document.getElementById("confirmBtn");
+
+    // Открыть модальное окно
+    openModalBtn.addEventListener('click', openModal);
+
+    closeModalBtn.addEventListener('click', closeModal);
+
+    modalOverlay.addEventListener('click', closeModal);
+
+
+    function openModal() {
+        modal.classList.remove("hidden");
+        modalOverlay.classList.remove("hidden");
+    }
+
+    function closeModal() {
+        modal.classList.add("hidden");
+        modalOverlay.classList.add("hidden");
+    }
+
+    function confirmForm() {
+
+        let form = document.getElementById("formId")
+        let formData = new FormData(form)
+
+        formData.append("CSRFToken", "{{.CSRFToken}}")
+
+        // Отправка данных формы с помощью fetch
+        fetch('search-json', {method: "POST", body: formData})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Логируем полученные данные
+                if (data.ok) {
+                    // Логика на случай успешной отправки данных
+                    console.log("Form submitted successfully.");
+                } else {
+                    // Логика на случай ошибки
+                    alert("Error occurred.")
+                    console.log("Error occurred.");
+                }
+            })
+            .catch(error => {
+                console.error("Request failed", error);  // Обработка ошибок при отправке
+            });
+    }
+
+    confirmBtn.addEventListener('click', confirmForm);
+
+</script>
+{{end}}
