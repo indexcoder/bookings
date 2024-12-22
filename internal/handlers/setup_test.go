@@ -13,6 +13,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -28,6 +29,12 @@ func getRoutes() http.Handler {
 	gob.Register(models.Reservation{})
 
 	app.InProduction = false
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -58,8 +65,8 @@ func getRoutes() http.Handler {
 	mux.Get("/", Repo.Home)
 
 	mux.Get("/about", Repo.About)
-	mux.Post("/about", Repo.PostAbout)
-	mux.Get("/about-summary", Repo.AboutSummary)
+	//mux.Post("/about", Repo.PostAbout)
+	//mux.Get("/about-summary", Repo.AboutSummary)
 
 	mux.Get("/contact", Repo.Contact)
 	mux.Get("/features", Repo.Features)

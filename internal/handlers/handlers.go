@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/indexcoder/bookings/internal/config"
+	"github.com/indexcoder/bookings/internal/helpers"
 	"github.com/indexcoder/bookings/internal/models"
 	"github.com/indexcoder/bookings/internal/render"
-	"log"
 	"net/http"
 )
 
@@ -25,17 +25,11 @@ func NewHandler(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, req *http.Request) {
-	remoteIp := req.RemoteAddr
-	m.App.Session.Put(req.Context(), "remote_ip", remoteIp)
 	render.Template(w, req, "home.html", &models.TemplateData{})
 }
 
 func (m *Repository) About(w http.ResponseWriter, req *http.Request) {
-	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello World again About."
-	remoteIp := m.App.Session.GetString(req.Context(), "remote_ip")
-	stringMap["remote_ip"] = remoteIp
-	render.Template(w, req, "about.html", &models.TemplateData{StringMap: stringMap})
+	render.Template(w, req, "about.html", &models.TemplateData{})
 }
 
 func (m *Repository) Contact(w http.ResponseWriter, req *http.Request) {
@@ -55,6 +49,13 @@ func (m *Repository) Features(w http.ResponseWriter, req *http.Request) {
 }
 
 func (m *Repository) Search(w http.ResponseWriter, req *http.Request) {
+
+	err := req.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
 	start := req.Form.Get("start")
 	end := req.Form.Get("end")
 	w.Write([]byte(fmt.Sprintf("Start date is %s and end date is %s.", start, end)))
@@ -66,14 +67,21 @@ type jsonResponse struct {
 }
 
 func (m *Repository) SearchJson(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("this is rest")
+
+	err := req.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
 	resp := jsonResponse{
 		OK:  true,
 		Msg: "ok available",
 	}
 	out, err := json.MarshalIndent(resp, "", " ")
 	if err != nil {
-		log.Println(err)
+		helpers.ServerError(w, err)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
