@@ -1,5 +1,5 @@
 {{define "base"}}
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -16,10 +16,23 @@
             <div class="container mx-auto px-6 py-4">
                 <div class="flex justify-between items-center">
                     <a href="/" class="text-3xl font-bold text-gray-800">My Landing Page</a>
-                    <nav>
+                    <nav class="flex items-center">
                         <a href="/features" class="text-gray-600 mx-3">Features</a>
                         <a href="/about" class="text-gray-600 mx-3">About</a>
-                        <a href="/contact" class="text-gray-600 mx-3">Contact</a>
+                        <a href="/search-availability" class="text-gray-600 mx-3">Search</a>
+                        {{ if eq .IsAuth 1 }}
+                            <div class="relative">
+                                <button id="dropdownButton" class="bg-blue-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                    Admin
+                                </button>
+                                <p id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg hidden">
+                                    <a href="/admin/dashboard" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                                </p>
+                            </div>
+                        {{ else }}
+                            <a href="/login" class="text-gray-600 mx-3">Login</a>
+                        {{ end }}
                     </nav>
                 </div>
             </div>

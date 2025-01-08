@@ -1,0 +1,1 @@
+insert into restrictions(restriction_name, created_at, updated_at) values ('Reservation', '2025-01-01 17:35:10.000000', '2025-01-01 17:35:10.000000'), ('Owner Block', '2025-01-01 17:35:10.000000', '2025-01-01 17:35:10.000000')

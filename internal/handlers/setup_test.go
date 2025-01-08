@@ -15,17 +15,16 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 )
 
 var app config.AppConfig
 var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
-
 var functions = template.FuncMap{}
 
-func getRoutes() http.Handler {
-
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 
 	app.InProduction = false
@@ -44,6 +43,12 @@ func getRoutes() http.Handler {
 
 	app.Session = session
 
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
+	defer close(mailChan)
+
+	listenForMail()
+
 	tc, err := CreateTestTemplateCache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
@@ -52,9 +57,22 @@ func getRoutes() http.Handler {
 	app.TemplateCache = tc
 	app.UseCache = true
 
-	repo := NewRepo(&app)
+	repo := NewTestRepo(&app)
 	NewHandler(repo)
-	render.NewTemplate(&app)
+	render.NewRenderer(&app)
+
+	os.Exit(m.Run())
+}
+
+func listenForMail() {
+	go func() {
+		for {
+			_ = <-app.MailChan
+		}
+	}()
+}
+
+func getRoutes() http.Handler {
 
 	mux := chi.NewRouter()
 
@@ -63,16 +81,9 @@ func getRoutes() http.Handler {
 	mux.Use(SessionLoad)
 
 	mux.Get("/", Repo.Home)
-
 	mux.Get("/about", Repo.About)
-	//mux.Post("/about", Repo.PostAbout)
-	//mux.Get("/about-summary", Repo.AboutSummary)
-
-	mux.Get("/contact", Repo.Contact)
 	mux.Get("/features", Repo.Features)
-
 	mux.Post("/search", Repo.Search)
-	mux.Post("/search-json", Repo.SearchJson)
 
 	fileServer := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))

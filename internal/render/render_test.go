@@ -8,16 +8,12 @@ import (
 
 func TestAddDefaultData(t *testing.T) {
 	var td models.TemplateData
-
 	r, err := getSession()
 	if err != nil {
 		t.Error(err)
 	}
-
 	session.Put(r.Context(), "flash", "123")
-
 	result := AddDefaultData(&td, r)
-
 	if result.Flash != "123" {
 		t.Error("flash should not be 123")
 	}
@@ -48,7 +44,6 @@ func TestRenderTemplate(t *testing.T) {
 	if err == nil {
 		t.Error("rendering template should have failed")
 	}
-
 }
 
 func getSession() (*http.Request, error) {
@@ -64,7 +59,7 @@ func getSession() (*http.Request, error) {
 }
 
 func TestNewTemplates(t *testing.T) {
-	NewTemplate(app)
+	NewRenderer(app)
 }
 
 func TestCreateTemplateCache(t *testing.T) {
@@ -73,5 +68,4 @@ func TestCreateTemplateCache(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
 }

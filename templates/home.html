@@ -123,19 +123,36 @@
         let formData = new FormData(form)
 
         formData.append("CSRFToken", "{{.CSRFToken}}")
+        formData.append("room_id", "1")
 
         // Отправка данных формы с помощью fetch
-        fetch('search-json', {method: "POST", body: formData})
+        fetch('availability-json', {method: "POST", body: formData})
             .then(response => response.json())
             .then(data => {
                 console.log(data);  // Логируем полученные данные
                 if (data.ok) {
-                    // Логика на случай успешной отправки данных
-                    console.log("Form submitted successfully.");
+
+                    Swal.fire({
+                        title: "<strong>Room is available.</strong>",
+                        icon: "success",
+                        html: `<a href="/book-room?id=${encodeURIComponent(data.room_id)}&s=${encodeURIComponent(data.start_date)}&e=${encodeURIComponent(data.end_date)}" autofocus>Book now</a>`,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: false,
+                    });
+
+
+                    console.log("room is available.");
                 } else {
-                    // Логика на случай ошибки
-                    alert("Error occurred.")
-                    console.log("Error occurred.");
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "room is not available.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    console.log("room is not available.");
                 }
             })
             .catch(error => {

@@ -1,0 +1,13 @@
+development:
+  dialect: postgres
+  database: bookings
+  user: postgres
+  password: 12345
+  host: localhost
+  pool: 5
+
+test:
+  url: {{envOr "localhost" "postgres://postgres:postgres@localhost:5432/bookings"}}
+
+production:
+  url: {{envOr "localhost" "postgres://postgres:postgres@localhost:5432/bookings"}}

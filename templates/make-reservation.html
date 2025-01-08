@@ -1,0 +1,64 @@
+{{template "base" .}}
+{{define "content"}}
+<section class="py-16">
+    <div class="container mx-auto text-center">
+        {{ $res := index .Data "reservation" }}
+        <h1>Make a Reservation</h1>
+        <p><strong>Reservation Detail</strong></p>
+        <p>Room: {{ $res.Room.RoomName }}</p>
+        <p>Arrival: {{ index .StringMap "start_date" }}</p>
+        <p>Departial: {{ index .StringMap "end_date" }}</p>
+
+        <form class="w-full max-w-full" action="/make-reservation" method="post">
+
+            <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+            <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}">
+            <input type="hidden" name="end_date" value="{{index .StringMap "end_date" }}">
+            <input type="hidden" name="room_id" value="{{ $res.RoomID }}">
+
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">First Name:</label>
+                    {{ with .Form.Errors.Get "first_name" }}
+                        <label class="text-red-500">{{.}}</label>
+                    {{ end }}
+                    <input name="first_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Last name</label>
+                    {{ with .Form.Errors.Get "last_name" }}
+                        <label class="text-red-500">{{.}}</label>
+                    {{ end }}
+                    <input name="last_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Email:</label>
+                    {{ with .Form.Errors.Get "email" }}
+                        <label class="text-red-500">{{.}}</label>
+                    {{ end }}
+                    <input name="email" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Phone</label>
+                    {{ with .Form.Errors.Get "phone" }}
+                        <label class="text-red-500">{{.}}</label>
+                    {{ end }}
+                    <input name="phone" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-blue-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                </div>
+            </div>
+
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                Send
+            </button>
+        </form>
+    </div>
+</section>
+{{end}}
+
+{{define "js"}}
+<script>
+</script>
+{{end}}

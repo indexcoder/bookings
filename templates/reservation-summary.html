@@ -1,0 +1,45 @@
+{{template "base" .}}
+{{define "content"}}
+
+{{$res := index .Data "reservation" }}
+
+<section class="py-16">
+    <div class="container mx-auto text-center">
+        <h3 class="text-3xl font-semibold text-gray-800">About Summary</h3>
+        <hr>
+        <table class="table-auto">
+            <tbody>
+                <tr>
+                    <td>Name:</td>
+                    <td>{{$res.FirstName}} {{$res.LastName}}</td>
+                </tr>
+                <tr>
+                    <td>Room:</td>
+                    <td>{{ $res.Room.RoomName }}</td>
+                </tr>
+                <tr>
+                    <td>Arrival:</td>
+                    <td>{{ index .StringMap "start_date" }}</td>
+                </tr>
+                <tr>
+                    <td>Departure:</td>
+                    <td>{{ index .StringMap "end_date" }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{$res.Email}}</td>
+                </tr>
+                <tr>
+                    <td>Phone:</td>
+                    <td>{{$res.Phone}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{{end}}
+
+{{define "js"}}
+<script>
+</script>
+{{end}}
