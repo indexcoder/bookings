@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/indexcoder/bookings/internal/config"
@@ -55,10 +56,28 @@ func run() (*driver.DB, error) {
 	gob.Register(models.RoomRestriction{})
 	gob.Register(map[string]int{})
 
+	// read flags
+	inProduction := flag.Bool("production", true, "Application is in production")
+	useCache := flag.Bool("cache", false, "Use template cache")
+	dbHost := flag.String("dbHost", "localhost", "Database host")
+	dbName := flag.String("dbName", "", "DataBase name")
+	dbUser := flag.String("dbUser", "", "DataBase user")
+	dbPass := flag.String("dbPass", "", "DataBase password")
+	dbPort := flag.String("dbPort", "5432", "DataBase port")
+	dbSsl := flag.String("dbSsl", "disabled", "DataBase ssl settings (disabled,  prefer, require)")
+
+	flag.Parse()
+
+	if *dbName == "" || *dbUser == "" || *dbPass == "" {
+		fmt.Println("Missing required flags")
+		os.Exit(1)
+	}
+
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan
 
-	app.InProduction = false
+	app.InProduction = *inProduction
+	app.UseCache = *useCache
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog
@@ -76,7 +95,8 @@ func run() (*driver.DB, error) {
 
 	// connect to database
 	log.Println("connecting to database...")
-	db, err := driver.ConnectSQL("host=localhost port=5432 dbname=bookings user=postgres password=12345 sslmode=disable")
+	connString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", *dbHost, *dbPort, *dbName, *dbUser, *dbPass, *dbSsl)
+	db, err := driver.ConnectSQL(connString)
 	if err != nil {
 		log.Fatal("Cannot connect to database! dying...", err.Error())
 	}
@@ -89,7 +109,6 @@ func run() (*driver.DB, error) {
 	}
 
 	app.TemplateCache = tc
-	app.UseCache = false
 
 	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandler(repo)

@@ -27,6 +27,8 @@ var theTests = []struct {
 	{"home", "/", "GET", http.StatusOK},
 	{"about", "/about", "GET", http.StatusOK},
 	{"contact", "/features", "GET", http.StatusOK},
+	{"non-existent", "/green-noo-ser/this/is", "GET", http.StatusNotFound},
+
 	//{"features", "/search-availability", "GET", http.StatusOK},
 	//{"search", "/search", "POST", []postData{
 	//	{key: "start", val: "2021-01-01"},
@@ -141,8 +143,8 @@ func TestRepository_PostReservation(t *testing.T) {
 
 	handler.ServeHTTP(rr, req)
 
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler returned wrong response coder for missing post body status code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response coder for missing post body status code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 
 	// test for invalid start date
@@ -154,8 +156,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	rr = httptest.NewRecorder()
 	handler = http.HandlerFunc(Repo.PostReservation)
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler returned wrong response coder for invalid start date code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response coder for invalid start date code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 
 	// test for invalid end date
@@ -167,8 +169,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	rr = httptest.NewRecorder()
 	handler = http.HandlerFunc(Repo.PostReservation)
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler returned wrong response coder for invalid end date code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response coder for invalid end date code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 
 	// test for invalid room id
@@ -180,8 +182,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	rr = httptest.NewRecorder()
 	handler = http.HandlerFunc(Repo.PostReservation)
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler returned wrong response coder for invalid room id code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler returned wrong response coder for invalid room id code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 
 	// test for invalid data
@@ -212,8 +214,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	rr = httptest.NewRecorder()
 	handler = http.HandlerFunc(Repo.PostReservation)
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler when failed when trying to fail inserting reservation code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler when failed when trying to fail inserting reservation code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 
 	// test for failed to insert restriction into database
@@ -225,8 +227,8 @@ func TestRepository_PostReservation(t *testing.T) {
 	rr = httptest.NewRecorder()
 	handler = http.HandlerFunc(Repo.PostReservation)
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusTemporaryRedirect {
-		t.Errorf("PostReservation handler when failed when trying to fail inserting reservation code: got %v want %v", rr.Code, http.StatusTemporaryRedirect)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("PostReservation handler when failed when trying to fail inserting reservation code: got %v want %v", rr.Code, http.StatusSeeOther)
 	}
 }
 

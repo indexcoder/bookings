@@ -22,14 +22,16 @@
 
   <form action="/admin/reservations-calendar" method="post">
     <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+    <input type="hidden" name="m" value="{{ index .StringMap "this_month"}}">
+    <input type="hidden" name="y" value="{{ index .StringMap "this_month_year" }}">
 
     {{ range $rooms }}
       {{ $roomID := .ID }}
       {{ $blocks := index $.Data (printf "block_map_%d" .ID) }}
       {{ $reservations := index $.Data (printf "reservation_map_%d" .ID) }}
 
-
       <h4 class="text-gray-300">{{ .RoomName }}</h4>
+
       <div class="overflow-x-auto">
         <table class="min-w-full table-auto border-collapse border border-gray-700 text-gray-400">
             <tbody>
@@ -42,7 +44,7 @@
                 {{ range $index := iterate $dim }}
                   <td class="px-2 py-2 border border-gray-700 text-center">
                     {{ if gt (index $reservations (printf "%s-%s-%d" $curYear $curMonth (add $index 1))) 0}}
-                      <a href="/admin/reservations/cal/{{index $reservations (printf "%s-%s-%d" $curYear $curMonth (add $index 1))}}" class="text-red-500">R</a>
+                      <a href="/admin/reservations/cal/{{index $reservations (printf "%s-%s-%d" $curYear $curMonth (add $index 1))}}/show?y={{$curYear}}&m={{$curMonth}}" class="text-red-500">R</a>
                     {{ else }}
                       <input
                              {{ if gt (index $blocks (printf "%s-%s-%d" $curYear $curMonth (add $index 1))) 0 }}
